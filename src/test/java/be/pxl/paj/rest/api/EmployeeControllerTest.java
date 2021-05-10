@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -28,6 +30,7 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+// Om mockito mogelijk te maken in de test is deze extensie
 @ExtendWith(MockitoExtension.class)
 public class EmployeeControllerTest {
 
@@ -63,6 +66,8 @@ public class EmployeeControllerTest {
 
 		Employee response = employeeController.find(EMPLOYEE_ID);
 
+		// Met verity ga je controleren of de verify is aangeroepen en of de findById is uitgevoerd
+		Mockito.verify(employeeRepository).findById(EMPLOYEE_ID);
 		assertEquals(EMPLOYEE_ID, response.getId());
 		assertEquals(EMPLOYEE_NAME, response.getName());
 		assertEquals(EMPLOYEE_ROLE, response.getRole());

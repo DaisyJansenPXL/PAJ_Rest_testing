@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
+// webmvc test maken en maken voor onderstaande controller
 @WebMvcTest(value = EmployeeController.class)
 public class EmployeeControllerTestAlt {
 	private static final Long EMPLOYEE_ID = 14L;
@@ -33,20 +34,25 @@ public class EmployeeControllerTestAlt {
 	@Autowired
 	private MockMvc mockMvc;
 
+	// mockbean omdat het een bean moet zijn die geinjecteerd moet worden op de controller
 	@MockBean
 	private EmployeeRepository employeeRepository;
 
 
 	@Test
 	public void testCreateEmployee() throws Exception {
+		// maakt niet uit welk object van de employee klasse wordt gesaved, argument er uit halen door iom.getArgument op eerste plaats
 		when(employeeRepository.save(any(Employee.class))).thenAnswer(iom -> {
 			Employee createdEmployee = iom.getArgument(0);
 			createdEmployee.setId(EMPLOYEE_ID);
 			return createdEmployee;
 		});
 
+		// post
 	    mockMvc.perform(MockMvcRequestBuilders.post("/employees")
+				// json format
 				.contentType(MediaType.APPLICATION_JSON)
+				// content meegeven als een string
 				.content("{\"name\": \"Demo\", \"role\": \"developer\"}")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated())
@@ -65,6 +71,7 @@ public class EmployeeControllerTestAlt {
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/employees/{id}", EMPLOYEE_ID)
 				.accept(MediaType.APPLICATION_JSON))
+				// http status testen
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id").value(EMPLOYEE_ID))
 				.andExpect(jsonPath("$.name").value(EMPLOYEE_NAME))
@@ -74,8 +81,10 @@ public class EmployeeControllerTestAlt {
 	@Test
 	public void testFindByIdWithEmployeeNotFoundException() throws Exception {
 
+		// not found testen
 		when(employeeRepository.findById(EMPLOYEE_ID)).thenReturn(Optional.empty());
 
+		// mockmvc makkelijkste om rest endpoints te testen
 		mockMvc.perform(MockMvcRequestBuilders.get("/employees/{id}", EMPLOYEE_ID)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());

@@ -13,6 +13,7 @@ class LoadDatabase {
 
   private static final Logger LOGGER = LogManager.getLogger(LoadDatabase.class);
  // Spring Boot will run ALL CommandLineRunner beans once the application context is loaded.
+    // Worden eenmaal gerund bij het opstarten van de applicatie en wordt deze data opgeslagen in de in-memory db
   @Bean
   public CommandLineRunner initDatabase(EmployeeRepository repository) {
     return args -> {

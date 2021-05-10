@@ -22,7 +22,7 @@ class EmployeeController {
 	@Autowired
 	private EmployeeRepository employeeRepository;
 
-
+	//endpoint employees die alle employees toont
 	@GetMapping("/employees")
 	public List<Employee> all() {
 
@@ -30,10 +30,14 @@ class EmployeeController {
 	}
 
 	@PostMapping("/employees")
+	// nieuwe data wordt meegegeven met RequestBody
+	// ResponseEntity dat niets returnt kan met <Void>
 	public ResponseEntity<Employee> createEmployee(@RequestBody Employee newEmployee) {
 
+		//save function zorgt voor genereren id
 		newEmployee = employeeRepository.save(newEmployee);
 		URI location = URI.create(String.format("/employees/%s", newEmployee.getId()));
+		//body wordt opgevuld
 		return ResponseEntity.created(location).body(newEmployee);
 	}
 
